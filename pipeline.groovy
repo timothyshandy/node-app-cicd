@@ -130,18 +130,4 @@ pipeline {
         }
     }
 
-    post {
-
-        success {
-            echo 'Pipeline Executed Successfully'
-        }
-
-        failure {
-            echo 'Pipeline Failed'
-        }
-
-        always {
-            cleanWs()
-        }
-    }
 }
