@@ -111,15 +111,15 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 sh '''
-                docker rm -f ${CONTAINER_NAME} || true
+                docker rm -f node-demo-container || true
 
                 docker run -d \
-                --name ${CONTAINER_NAME} \
+                --name node-demo-container \
                 -p 3000:3000 \
-                ${DOCKER_REPO}:${BUILD_NUMBER}
+                node-demo-app:${BUILD_NUMBER}
                 '''
             }
-        }
+}
 
         stage('Verify Deployment') {
             steps {
