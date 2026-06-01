@@ -15,8 +15,7 @@ pipeline {
                     url: 'https://github.com/mayurmwagh/node-app.git'
             }
         }
-    }
-    stages {
+    
         stage('Verify Environment') {
             steps {
                 sh '''
@@ -31,8 +30,6 @@ pipeline {
                 '''
             }
         }
-    }
-    stages {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install' 
