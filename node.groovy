@@ -18,17 +18,7 @@ pipeline {
                 git branch: 'main',
                     url: 'https://github.com/mayurmwagh/node-app.git'
             }
-        }
-        stage('Debug') {
-             steps {
-                sh '''
-                    whoami
-                    groups
-                    ls -l /var/run/docker.sock
-                '''
-            }
-        }
-    
+        }    
         stage('Verify Environment') {
             steps {
                 sh '''
@@ -66,7 +56,7 @@ pipeline {
                     usernamePassword(
                         credentialsId: 'dockerhub-creds',
                         usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSORD'
+                        passwordVariable: 'DOCKER_PASSWORD'
                     )
                 ]) {
                     sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
