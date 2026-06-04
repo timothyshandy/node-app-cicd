@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "node-demo-app"
-        DOCKER_REPO = "mayurmwagh/node-demo-sample"
+        DOCKER_REPO = "mayurwagh/node-demo-sample"
         CONTAINER_NAME = "node-demo-container"
     }
     stages {
