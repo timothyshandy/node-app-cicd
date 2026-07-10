@@ -6,6 +6,7 @@ pipeline{
         DOCKER_REPO = "mayurwagh"
         DOCKER_USER = "node-app"
         IMAGE_NAME = "node-app"
+        CONTAINER_NAME = "node-container"
     }
     stages {
         stage('Checkout') {
@@ -76,6 +77,15 @@ pipeline{
                             docker push ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER}
                         '''
                     }
+                }
+            }
+            stage('Deploy Container'){
+                steps {
+                        sh '''
+                            docker run -d \
+                            --name ${CONTAINER_NAME} -p 3000:3000 \
+                            ${DOCKER_REPO}/${DOCKER_USER}:${BUILD_NUMBER} 
+                        '''
                 }
             }
         }
