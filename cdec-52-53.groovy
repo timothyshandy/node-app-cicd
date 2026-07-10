@@ -1,6 +1,6 @@
 pipeline{
     agent {
-        label 'demo'
+        label 'Node-Agent'
     }
     environment {
         DOCKER_REPO = "mayurwagh"
