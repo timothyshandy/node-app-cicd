@@ -44,47 +44,8 @@ pipeline{
                 ''' 
             }
         }
-        stage('Docker Login') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-hub',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-                    sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
-                }
-            }
-        }
-        stage('Push Docker image'){
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-hub',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                sh '''
-                    docker tag ${DOCKER_REPO}:${BUILD_NUMBER} \
-                    ${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
-
-                    docker push ${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
-                '''
-            }
-            }
-        }
-        stage('Deployment'){
-            steps{
-                sh '''
-                    docker run -d \
-                    --name node-container -p 3000:3000 \
-                    ${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
-                '''
-            }
-        }
     }
 }
+
 
 
