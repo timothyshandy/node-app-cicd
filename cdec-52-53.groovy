@@ -65,7 +65,7 @@ pipeline{
                         usernameVariable: 'DOCKER_USER',
                         passwordVariable: 'DOCKER_PASS'
                     )
-                ])
+                ]) {
                 sh '''
                     docker tag ${DOCKER_REPO}:${BUILD_NUMBER} \
                     ${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
