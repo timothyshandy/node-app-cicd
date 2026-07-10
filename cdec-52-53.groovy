@@ -44,22 +44,20 @@ pipeline{
                 ''' 
             }
         }
-        // stage('Docker Login') {
-        //     steps {
-        //         withCredentials([
-        //             usernamePassword(
-        //                 credentialsId: '626460db-bf4f-41a8-86b7-e03f88673be7',
-        //                 usernameVariable: 'DOCKER_USERNAME',
-        //                 passwordVariable: 'DOCKER_PASSWORD'
-        //             )
-        //         ]) {
-        //             sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
-        //         }
-        //     }
-        // }
+        stage('Docker Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'docker-hub',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
+                }
+            }
+        }
     }
 }
 
 
-// /var/lib/jenkins/workspace/build-pipeline/.git # timeout=10
-// /home/ubuntu/workspace/Node-pipeline
