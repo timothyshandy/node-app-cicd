@@ -1,6 +1,6 @@
 pipeline{
     agent {
-        label 'Node-Agent'
+        label 'demo'
     }
     environment {
         DOCKER_REPO = "mayurwagh"
@@ -59,3 +59,7 @@ pipeline{
         // }
     }
 }
+
+
+// /var/lib/jenkins/workspace/build-pipeline/.git # timeout=10
+// /home/ubuntu/workspace/Node-pipeline
