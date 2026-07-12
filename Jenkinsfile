@@ -1,22 +1,21 @@
 pipeline {
     agent {
-        label 'node-new'
+        label 'node-agent'
     }
     
     tools {
         nodejs 'NodeJS'
     }
-
     environment {
-        IMAGE_NAME = "node-demo-app"
-        DOCKER_REPO = "mayurwagh/node-demo-sample"
+        IMAGE_NAME = "node-app"
+        DOCKER_REPO = "whoistimothyshandy/node-app"
         CONTAINER_NAME = "node-demo-container"
     }
     stages {
         stage('checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/mayurmwagh/node-app.git'
+                    url: 'https://github.com/timothyshandy/node-app-cicd.git'
             }
         }    
         stage('Verify Environment') {
@@ -24,10 +23,8 @@ pipeline {
                 sh '''
                 echo "Node Version:"
                 node -v
-
                 echo "NPM Version:"
                 npm -v
-
                 echo "Docker Version:"
                 docker --version
                 '''
@@ -46,7 +43,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t ${DOCKER_REPO}:${BUILD_NUMBER} .
+                docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
                 ''' 
             }
         }
@@ -54,18 +51,19 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(
-                        credentialsId: '626460db-bf4f-41a8-86b7-e03f88673be7',
+                        credentialsId: 'dockerhub_creds',
                         usernameVariable: 'DOCKER_USERNAME',
                         passwordVariable: 'DOCKER_PASSWORD'
                     )
                 ]) {
-                    sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
                 sh '''
+                docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${DOCKER_REPO}:${BUILD_NUMBER}
                 docker push ${DOCKER_REPO}:${BUILD_NUMBER}
                 '''
             }
@@ -74,14 +72,12 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f ${CONTAINER_NAME} || true
-
                 docker run -d \
                 --name ${CONTAINER_NAME} \
                 -p 3000:3000 \
                 ${DOCKER_REPO}:${BUILD_NUMBER}
                 '''
             }
-        }
+        } 
     }
-}       
-
+}
