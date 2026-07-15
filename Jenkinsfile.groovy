@@ -85,8 +85,7 @@ pipeline {
             kubectl apply -f deploymentfiles/service.yaml
 
             kubectl set image deployment/node-app \
-            node-demo-container=${DOCKER_REPO}:${BUILD_NUMBER}
-
+	    node-app-container=${DOCKER_REPO}:${BUILD_NUMBER}
             kubectl rollout status deployment/node-app
             '''
      }
