@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: node-app-container
-        image: whoistimothyshandy/node-app:22
+        image: whoistimothyshandy/node-app:25
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
