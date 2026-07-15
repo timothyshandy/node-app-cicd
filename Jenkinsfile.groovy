@@ -68,16 +68,22 @@ pipeline {
                 '''
             }
         }
-        stage('Deploy Container') {
+	stage ('Deploy to EKS') {
             steps {
-                sh '''
-                docker rm -f ${CONTAINER_NAME} || true
-                docker run -d \
-                --name ${CONTAINER_NAME} \
-                -p 3000:3000 \
-                ${DOCKER_REPO}:${BUILD_NUMBER}
-                '''
+                withCredentials([
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-creds'
+                    ]
+                ]) {
+                    sh '''
+                    aws eks --region ap-south-1 update-kubeconfig --name node-app-cluster
+                    kubectl apply -f deploymentfiles/deployment.yaml
+                    kubectl apply -f deploymentfiles/service.yaml
+                    kubectl set image deployment/${CONTAINER_NAME} ${CONTAINER_NAME}=${DOCKER_REPO}:${BUILD_NUMBER}
+                    '''
+                }
             }
-        } 
+        }         
     }
 }
