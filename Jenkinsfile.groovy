@@ -68,22 +68,29 @@ pipeline {
                 '''
             }
         }
-	stage ('Deploy to EKS') {
-            steps {
-                withCredentials([
-                    [
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-creds'
-                    ]
-                ]) {
-                    sh '''
-                    aws eks --region ap-south-1 update-kubeconfig --name node-app-cluster
-                    kubectl apply -f deploymentfiles/deployment.yaml
-                    kubectl apply -f deploymentfiles/service.yaml
-                    kubectl set image deployment/${CONTAINER_NAME} ${CONTAINER_NAME}=${DOCKER_REPO}:${BUILD_NUMBER}
-                    '''
-                }
-            }
-        }         
+	stage('Deploy to EKS') {
+    steps {
+        withCredentials([
+            [
+                $class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-creds'
+            ]
+        ]) {
+            sh '''
+            aws eks update-kubeconfig \
+            --region ap-south-1 \
+            --name node-app-cluster
+
+            kubectl apply -f deploymentfiles/deployment.yaml
+            kubectl apply -f deploymentfiles/service.yaml
+
+            kubectl set image deployment/node-app \
+            node-demo-container=${DOCKER_REPO}:${BUILD_NUMBER}
+
+            kubectl rollout status deployment/node-app
+            '''
+     }
+        }
+}        
     }
 }
